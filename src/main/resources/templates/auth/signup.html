@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Sign Up - User Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header text-center">
+          <h3>
+                        <span th:if="${selectedRole == 'ADMIN'}">
+                            <i class="fas fa-user-shield text-danger me-2"></i>Admin Registration
+                        </span>
+            <span th:if="${selectedRole == 'USER'}">
+                            <i class="fas fa-user text-primary me-2"></i>User Registration
+                        </span>
+          </h3>
+        </div>
+        <div class="card-body">
+          <!-- Role Indicator -->
+          <div class="alert alert-info text-center" th:if="${selectedRole}">
+            Registering as: <strong th:text="${selectedRole}"></strong>
+            <a th:href="@{/select-role}" class="btn btn-sm btn-outline-secondary ms-2">Change Role</a>
+          </div>
+
+          <!-- Error Message -->
+          <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+
+          <form th:action="@{/signup}" th:object="${user}" method="post">
+            <!-- Hidden role field -->
+            <input type="hidden" th:field="*{role}" />
+
+            <div class="mb-3">
+              <label for="name" class="form-label">Full Name *</label>
+              <input type="text" class="form-control" id="name" th:field="*{name}"
+                     th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''" required>
+              <div th:if="${#fields.hasErrors('name')}" class="invalid-feedback">
+                <span th:errors="*{name}"></span>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="username" class="form-label">Username *</label>
+              <input type="text" class="form-control" id="username" th:field="*{username}"
+                     th:classappend="${#fields.hasErrors('username')} ? 'is-invalid' : ''" required>
+              <div th:if="${#fields.hasErrors('username')}" class="invalid-feedback">
+                <span th:errors="*{username}"></span>
+              </div>
+              <small class="form-text text-muted">Username must be unique</small>
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email *</label>
+              <input type="email" class="form-control" id="email" th:field="*{email}"
+                     th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''" required>
+              <div th:if="${#fields.hasErrors('email')}" class="invalid-feedback">
+                <span th:errors="*{email}"></span>
+              </div>
+              <small class="form-text text-muted">Email must be unique</small>
+            </div>
+            <div class="mb-3">
+              <label for="contactNumber" class="form-label">Contact Number</label>
+              <input type="tel" class="form-control" id="contactNumber" th:field="*{contactNumber}"
+                     th:classappend="${#fields.hasErrors('contactNumber')} ? 'is-invalid' : ''">
+              <div th:if="${#fields.hasErrors('contactNumber')}" class="invalid-feedback">
+                <span th:errors="*{contactNumber}"></span>
+              </div>
+              <small class="form-text text-muted">10 digits only, must be unique</small>
+            </div>
+            <div class="mb-3">
+              <label for="age" class="form-label">Age</label>
+              <input type="number" class="form-control" id="age" th:field="*{age}"
+                     th:classappend="${#fields.hasErrors('age')} ? 'is-invalid' : ''">
+              <div th:if="${#fields.hasErrors('age')}" class="invalid-feedback">
+                <span th:errors="*{age}"></span>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Role</label>
+              <div class="form-control" th:class="${selectedRole == 'ADMIN'} ? 'bg-danger text-white' : 'bg-primary text-white'">
+                <strong th:text="${selectedRole}"></strong>
+                <span th:if="${selectedRole == 'ADMIN'}" class="float-end">
+                                    <i class="fas fa-user-shield"></i>
+                                </span>
+                <span th:if="${selectedRole == 'USER'}" class="float-end">
+                                    <i class="fas fa-user"></i>
+                                </span>
+              </div>
+              <div class="form-text">Selected during role selection</div>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password *</label>
+              <input type="password" class="form-control" id="password" th:field="*{password}"
+                     th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''" required>
+              <div th:if="${#fields.hasErrors('password')}" class="invalid-feedback">
+                <span th:errors="*{password}"></span>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-success w-100">
+                            <span th:if="${selectedRole == 'ADMIN'}">
+                                <i class="fas fa-user-shield me-1"></i>Create Admin Account
+                            </span>
+              <span th:if="${selectedRole == 'USER'}">
+                                <i class="fas fa-user me-1"></i>Create User Account
+                            </span>
+            </button>
+          </form>
+          <div class="text-center mt-3">
+            <p>Already have an account? <a th:href="@{/login}">Login here</a></p>
+            <p>Want to change role? <a th:href="@{/select-role}">Go back to role selection</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

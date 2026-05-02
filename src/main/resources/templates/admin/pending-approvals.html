@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Pending Approvals - Admin Panel</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    .admin-sidebar {
+        background: #343a40;
+        color: white;
+        min-height: 100vh;
+        padding-top: 20px;
+    }
+    .admin-sidebar a {
+        color: rgba(255,255,255,0.8);
+        padding: 10px 15px;
+        display: block;
+        text-decoration: none;
+    }
+    .admin-sidebar a:hover, .admin-sidebar a.active {
+        color: white;
+        background: rgba(255,255,255,0.1);
+    }
+    .user-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+    .pending-card {
+        border-left: 4px solid #ffc107;
+        transition: all 0.3s;
+    }
+    .pending-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-2 p-0 admin-sidebar">
+      <div class="p-3">
+        <h4><i class="fas fa-user-shield me-2"></i>Admin Panel</h4>
+      </div>
+      <nav class="nav flex-column">
+        <a class="nav-link" th:href="@{/admin/dashboard}">
+          <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+        </a>
+        <a class="nav-link" th:href="@{/admin/add-user}">
+          <i class="fas fa-user-plus me-2"></i>Add User
+        </a>
+        <a class="nav-link" th:href="@{/admin/users}">
+          <i class="fas fa-users me-2"></i>Manage Users
+        </a>
+        <a class="nav-link active" th:href="@{/admin/pending-approvals}">
+          <i class="fas fa-clock me-2"></i>Pending Approvals
+          <span th:if="${totalPending != null && totalPending > 0}"
+                class="badge bg-danger float-end" th:text="${totalPending}"></span>
+        </a>
+        <a class="nav-link" th:href="@{/logout}">
+          <i class="fas fa-sign-out-alt me-2"></i>Logout
+        </a>
+      </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-md-10 p-4">
+      <!-- Page Header -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-clock me-2"></i>Pending Approvals</h2>
+        <div>
+          <a th:href="@{/admin/dashboard}" class="btn btn-secondary me-2">
+            <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+          </a>
+          <a th:href="@{/admin/users}" class="btn btn-primary">
+            <i class="fas fa-users me-1"></i> View All Users
+          </a>
+        </div>
+      </div>
+
+      <!-- Success/Error Messages -->
+      <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+      <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+
+      <!-- Pending Users Count -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">
+            <i class="fas fa-user-clock me-2"></i>
+            Users Waiting for Approval
+          </h5>
+          <p class="card-text">
+            There are <strong th:text="${totalPending}">0</strong> user(s) waiting for your approval.
+            Please review their details below and approve or reject them.
+          </p>
+        </div>
+      </div>
+
+      <!-- Pending Users List -->
+      <div th:if="${totalPending > 0}">
+        <div class="row">
+          <div class="col-md-4" th:each="user : ${pendingUsers}">
+            <div class="card mb-4 pending-card">
+              <div class="card-body">
+                <div class="d-flex align-items-start mb-3">
+                  <img th:if="${user.profilePhoto}" th:src="${user.profilePhoto}"
+                       alt="Profile" class="user-avatar me-3">
+                  <img th:unless="${user.profilePhoto}"
+                       src="https://via.placeholder.com/50"
+                       alt="Profile" class="user-avatar me-3">
+                  <div>
+                    <h6 class="mb-1" th:text="${user.name}"></h6>
+                    <p class="text-muted mb-0" th:text="${user.username}"></p>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <p class="mb-1"><i class="fas fa-envelope me-2"></i> <span th:text="${user.email}"></span></p>
+                  <p class="mb-1" th:if="${user.contactNumber}">
+                    <i class="fas fa-phone me-2"></i> <span th:text="${user.contactNumber}"></span>
+                  </p>
+                  <p class="mb-0" th:if="${user.age}">
+                    <i class="fas fa-birthday-cake me-2"></i> <span th:text="${user.age + ' years old'}"></span>
+                  </p>
+                </div>
+
+                <div th:if="${user.address}" class="mb-3">
+                  <small class="text-muted">
+                    <i class="fas fa-map-marker-alt me-1"></i>
+                    <span th:text="${user.address}"></span>
+                  </small>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                  <small class="text-muted">
+                    Joined: <span th:text="${#temporals.format(user.createdAt, 'dd MMM yyyy')}"></span>
+                  </small>
+                </div>
+
+                <div class="mt-3 d-grid gap-2">
+                  <!-- Approve Form -->
+                  <form th:action="@{/admin/approve-user/{id}(id=${user.id})}" method="post">
+                    <input type="hidden"
+                           th:if="${_csrf != null}"
+                           th:name="${_csrf.parameterName}"
+                           th:value="${_csrf.token}">
+
+                    <button type="submit" class="btn btn-success btn-sm w-100" onclick="return confirm('Are you sure you want to approve this user?')">
+                      <i class="fas fa-check me-1"></i> Approve
+                    </button>
+                  </form>
+
+                  <!-- Reject Form -->
+                  <form th:action="@{/admin/reject-user/{id}(id=${user.id})}" method="post">
+                    <input type="hidden"
+                           th:if="${_csrf != null}"
+                           th:name="${_csrf.parameterName}"
+                           th:value="${_csrf.token}">
+
+                    <button type="submit" class="btn btn-danger btn-sm w-100" onclick="return confirm('Are you sure you want to reject this user?')">
+                      <i class="fas fa-times me-1"></i> Reject
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- No Pending Users -->
+      <div th:if="${totalPending == 0}" class="text-center py-5">
+        <div class="mb-4">
+          <i class="fas fa-check-circle fa-5x text-success"></i>
+        </div>
+        <h3 class="mb-3">No Pending Approvals</h3>
+        <p class="text-muted mb-4">All users have been approved. Great job!</p>
+        <a th:href="@{/admin/users}" class="btn btn-primary me-2">
+          <i class="fas fa-users me-1"></i> View All Users
+        </a>
+        <a th:href="@{/admin/dashboard}" class="btn btn-outline-secondary">
+          <i class="fas fa-tachometer-alt me-1"></i> Go to Dashboard
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

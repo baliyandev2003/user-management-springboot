@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} + ' - User Portal'">User Portal</title>
+
+    <!-- CSRF META -->
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+    <!-- User-specific styles -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/static/user/css/user-styles.css}">
+
+    <!-- Page-specific styles -->
+    <th:block th:insert="${pageStyles} ?: ~{}"></th:block>
+</head>
+
+<body class="user-body">
+
+<!-- ================= HEADER ================= -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary user-navbar">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/user-dashboard}">
+            <i class="fas fa-users me-2"></i>User Portal
+        </a>
+
+        <!-- User Menu -->
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="userDropdown"
+                   role="button" data-bs-toggle="dropdown">
+                    <i class="fas fa-user-circle me-1"></i>
+                    <span th:text="${user != null ? user.name : 'User'}"></span>
+                </a>
+
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                        <a class="dropdown-item" th:href="@{/profile}">
+                            <i class="fas fa-user-edit me-1"></i> My Profile
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" th:href="@{/settings}">
+                            <i class="fas fa-cog me-1"></i> Settings
+                        </a>
+                    </li>
+
+                    <li><hr class="dropdown-divider"></li>
+
+                    <!-- ✅ FIXED LOGOUT -->
+                    <li>
+                        <form th:action="@{/logout}" method="post" class="px-3">
+                            <input type="hidden"
+                                   th:name="${_csrf.parameterName}"
+                                   th:value="${_csrf.token}" />
+                            <button type="submit"
+                                    class="btn btn-link dropdown-item text-danger p-0">
+                                <i class="fas fa-sign-out-alt me-1"></i> Logout
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- ================= BODY ================= -->
+<div class="user-container">
+
+    <!-- Sidebar -->
+    <div class="user-sidebar">
+        <div class="sidebar-header">
+            <h5><i class="fas fa-user"></i> User Menu</h5>
+        </div>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/user-dashboard}">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/profile}">
+                    <i class="fas fa-user-edit"></i> My Profile
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/about}">
+                    <i class="fas fa-info-circle"></i> About Us
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/settings}">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/help}">
+                    <i class="fas fa-question-circle"></i> Help
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <main class="user-main">
+        <th:block th:insert="${content}"></th:block>
+    </main>
+</div>
+
+<!-- ================= FOOTER ================= -->
+<footer class="user-footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <p class="mb-0">© 2024 User Portal - All Rights Reserved</p>
+            </div>
+            <div class="col-md-6 text-end">
+                <p class="mb-0">
+                    <i class="fas fa-phone me-1"></i> Support: 1800-123-456
+                    <i class="fas fa-envelope ms-3 me-1"></i> help@userportal.com
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/static/user/js/user-scripts.js}"></script>
+
+<!-- Page-specific scripts -->
+<th:block th:insert="${pageScripts} ?: ~{}"></th:block>
+
+</body>
+</html>

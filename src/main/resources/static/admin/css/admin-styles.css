@@ -1,0 +1,102 @@
+/* Admin-specific styles */
+.admin-body {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.admin-navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1030;
+}
+
+.admin-container {
+    display: flex;
+    margin-top: 56px; /* Navbar height */
+    min-height: calc(100vh - 56px - 60px); /* Minus navbar and footer */
+}
+
+.admin-sidebar {
+    width: 250px;
+    background: linear-gradient(180deg, #343a40 0%, #212529 100%);
+    color: white;
+    position: fixed;
+    top: 56px;
+    left: 0;
+    bottom: 60px;
+    overflow-y: auto;
+    z-index: 1020;
+}
+
+.admin-sidebar .sidebar-header {
+    padding: 20px 15px;
+    border-bottom: 1px solid rgba(255,255,255,.1);
+}
+
+.admin-sidebar .nav-link {
+    color: rgba(255,255,255,.8);
+    padding: 12px 20px;
+    border-left: 3px solid transparent;
+    transition: all 0.3s;
+}
+
+.admin-sidebar .nav-link:hover {
+    color: white;
+    background: rgba(255,255,255,.1);
+    border-left: 3px solid #007bff;
+}
+
+.admin-sidebar .nav-link.active {
+    color: white;
+    background: rgba(255,255,255,.1);
+    border-left: 3px solid #007bff;
+}
+
+.admin-main {
+    flex: 1;
+    margin-left: 250px;
+    padding: 20px;
+    background-color: white;
+    min-height: calc(100vh - 56px - 60px);
+}
+
+.admin-footer {
+    background-color: #343a40;
+    color: white;
+    padding: 15px 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1030;
+    margin-left: 250px;
+}
+
+/* Card styling for admin */
+.admin-main .card {
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+    margin-bottom: 20px;
+}
+
+.admin-main .card-header {
+    border-radius: 10px 10px 0 0 !important;
+}
+
+/* Table styling */
+.admin-main .table {
+    margin-bottom: 0;
+}
+
+.admin-main .table thead th {
+    border-top: none;
+    font-weight: 600;
+}
+
+/* Button styling */
+.admin-main .btn {
+    border-radius: 5px;
+}

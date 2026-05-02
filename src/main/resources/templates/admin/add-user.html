@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}">Add New User</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .admin-sidebar {
+            background: #343a40;
+            color: white;
+            min-height: 100vh;
+            padding-top: 20px;
+        }
+        .admin-sidebar a {
+            color: rgba(255,255,255,0.8);
+            padding: 10px 15px;
+            display: block;
+            text-decoration: none;
+        }
+        .admin-sidebar a:hover, .admin-sidebar a.active {
+            color: white;
+            background: rgba(255,255,255,0.1);
+        }
+        .error-message {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        .is-invalid {
+            border-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-2 p-0 admin-sidebar">
+            <div class="p-3">
+                <h4><i class="fas fa-user-shield me-2"></i>Admin Panel</h4>
+            </div>
+            <nav class="nav flex-column">
+                <a class="nav-link" th:href="@{/admin/dashboard}">
+                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                </a>
+                <a class="nav-link active" th:href="@{/admin/add-user}">
+                    <i class="fas fa-user-plus me-2"></i>Add User
+                </a>
+                <a class="nav-link" th:href="@{/admin/dashboard}">
+                    <i class="fas fa-users me-2"></i>Manage Users
+                </a>
+                <a class="nav-link" th:href="@{/logout}">
+                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-10 p-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user-plus me-2"></i>
+                        <span th:text="${title}">Add New User</span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Success Message -->
+                    <div th:if="${successMessage}" class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <span th:text="${successMessage}"></span>
+                    </div>
+
+                    <!-- Error Message -->
+                    <div th:if="${errorMessage}" class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        <span th:text="${errorMessage}"></span>
+                    </div>
+
+                    <form th:action="@{/admin/add-user}" th:object="${user}" method="post">
+                        <input type="hidden" th:name="selectedRole" th:value="${selectedRole}" />
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Username *</label>
+                                <input type="text" class="form-control"
+                                       th:field="*{username}"
+                                       th:classappend="${#fields.hasErrors('username')} ? 'is-invalid' : ''"
+                                       placeholder="Enter username" required>
+                                <div th:if="${#fields.hasErrors('username')}" class="error-message">
+                                    <span th:errors="*{username}"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email *</label>
+                                <input type="email" class="form-control"
+                                       th:field="*{email}"
+                                       th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
+                                       placeholder="Enter email" required>
+                                <div th:if="${#fields.hasErrors('email')}" class="error-message">
+                                    <span th:errors="*{email}"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Full Name *</label>
+                                <input type="text" class="form-control"
+                                       th:field="*{name}"
+                                       th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
+                                       placeholder="Enter full name" required>
+                                <div th:if="${#fields.hasErrors('name')}" class="error-message">
+                                    <span th:errors="*{name}"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Password *</label>
+                                <input type="password" class="form-control"
+                                       th:field="*{password}"
+                                       th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''"
+                                       placeholder="Enter password" required>
+                                <div th:if="${#fields.hasErrors('password')}" class="error-message">
+                                    <span th:errors="*{password}"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Role *</label>
+                                <select class="form-control"
+                                        th:field="*{role}"
+                                        th:classappend="${#fields.hasErrors('role')} ? 'is-invalid' : ''"
+                                        required>
+                                    <option value="">Select Role</option>
+                                    <option value="USER" th:selected="${user.role != null && user.role.name() == 'USER'}">User</option>
+                                    <option value="ADMIN" th:selected="${user.role != null && user.role.name() == 'ADMIN'}">Admin</option>
+<!--                                    <option value="SUPER_ADMIN" th:selected="${user.role != null && user.role.name() == 'SUPER_ADMIN'}">Super Admin</option>-->
+                                </select>
+                                <div th:if="${#fields.hasErrors('role')}" class="error-message">
+                                    <span th:errors="*{role}"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Age</label>
+                                <input type="number" class="form-control"
+                                       th:field="*{age}"
+                                       th:classappend="${#fields.hasErrors('age')} ? 'is-invalid' : ''"
+                                       placeholder="Enter age">
+                                <div th:if="${#fields.hasErrors('age')}" class="error-message">
+                                    <span th:errors="*{age}"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Contact Number</label>
+                            <input type="tel" class="form-control"
+                                   th:field="*{contactNumber}"
+                                   th:classappend="${#fields.hasErrors('contactNumber')} ? 'is-invalid' : ''"
+                                   placeholder="Enter contact number">
+                            <div th:if="${#fields.hasErrors('contactNumber')}" class="error-message">
+                                <span th:errors="*{contactNumber}"></span>
+                            </div>
+                        </div>
+
+
+
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox"
+                                       th:field="*{approved}">
+                                <label class="form-check-label">
+                                    Auto-approve this user
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox"
+                                       th:field="*{active}" checked>
+                                <label class="form-check-label">
+                                    Activate user immediately
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-user-plus me-1"></i> Add User
+                            </button>
+                            <a th:href="@{/admin/add-user}" class="btn btn-info">
+                                <i class="fas fa-sync me-1"></i> Change Role
+                            </a>
+                            <a th:href="@{/admin/dashboard}" class="btn btn-secondary">
+                                <i class="fas fa-times me-1"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-check approved for admin roles
+        const roleSelect = document.querySelector('select[th\\:field="*{role}"]');
+        const approvedCheckbox = document.querySelector('input[th\\:field="*{approved}"]');
+
+        if (roleSelect && approvedCheckbox) {
+            // Initial check
+            if (roleSelect.value === 'ADMIN' || roleSelect.value === 'SUPER_ADMIN') {
+                approvedCheckbox.checked = true;
+                approvedCheckbox.disabled = true;
+            }
+
+            // On change
+            roleSelect.addEventListener('change', function() {
+                if (this.value === 'ADMIN' || this.value === 'SUPER_ADMIN') {
+                    approvedCheckbox.checked = true;
+                    approvedCheckbox.disabled = true;
+                } else {
+                    approvedCheckbox.checked = false;
+                    approvedCheckbox.disabled = false;
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>

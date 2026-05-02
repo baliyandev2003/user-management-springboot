@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{Layout/Users/Sidebar-Users :: layout(~{::content})}">
+
+<th:block th:fragment="content">
+
+    <div class="container py-4">
+
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h5>Edit Profile</h5>
+            </div>
+
+            <div class="card-body">
+
+                <form th:action="@{/user/profile}"
+                      th:object="${user}"
+                      method="post"
+                      enctype="multipart/form-data">
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label>Name</label>
+                            <input type="text" class="form-control" th:field="*{name}">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label>Email</label>
+                            <input type="email" class="form-control" th:field="*{email}">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Profile Image</label>
+                        <input type="file" class="form-control" name="profileImage">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        Update Profile
+                    </button>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+
+</th:block>
+
+</html>

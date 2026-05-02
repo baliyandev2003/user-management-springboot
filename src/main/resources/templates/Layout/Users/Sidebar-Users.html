@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:fragment="layout(content)">
+
+<head>
+    <meta charset="UTF-8">
+    <title>User Layout</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          rel="stylesheet">
+
+    <style>
+        body { margin: 0; }
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background: #1e293b;
+            color: white;
+            position: fixed;
+        }
+        .sidebar .nav-link { color: #cbd5e1; }
+        .sidebar .nav-link:hover {
+            background: #334155;
+            color: white;
+        }
+        .sidebar-brand {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #334155;
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div>
+
+    <!-- Sidebar -->
+    <div class="sidebar p-3">
+
+        <div class="sidebar-brand">
+            <i class="fas fa-users-cog fa-2x mb-2"></i>
+            <h5>User Portal</h5>
+        </div>
+
+        <ul class="nav flex-column mt-4">
+
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/user/dashboard}">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/user/profile}">
+                    <i class="fas fa-user"></i> My Profile
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/user/about}">
+                    <i class="fas fa-info-circle"></i> About
+                </a>
+            </li>
+
+            <li class="nav-item mt-4">
+                <form th:action="@{/logout}" method="post">
+                    <button class="btn btn-link nav-link text-danger p-0">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+            </li>
+
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div th:replace="${content}"></div>
+    </div>
+
+</div>
+
+</body>
+</html>
